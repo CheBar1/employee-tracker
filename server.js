@@ -18,116 +18,168 @@ app.use(express.json());
 // Connect to database
 const connection = mysql.createConnection(
   {
-    host:process.env.DB_HOST,
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    database:process.env.DB_NAME
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
   },
   console.log(`Connected to the employee_tracker database.`)
 );
-
+ 
 // Function for inquirer to prompt
 startSearch();
 
 // Inquirer prompt function
 function startSearch() {
-    inquirer
+  inquirer
     .prompt({
-        name: "action",
-        type: "list",
-        message: "What would you like to do?",
-        choices: [
-            "View All Employees",
-            "Add Employee",
-            "Update Employee Role",
-            "View All Roles",
-            "Add Role",
-            "View All Departments",
-            "Add Department"
-          ]
-      }).then(answers => {
-        //starting switch statements
-        switch (answers.action) {
-          case "View All Employees":
-            byEmployee();
-            break; 
-          case "Add Employee":
-            addEmployee();
-            break; 
-          case "Update Employee Role":
-            updateRole();
-            break; 
-          case "View All Roles":
-            byRole();
-            break;
-          case "Add Role":
-            addRole();
-            break;
-          case "View All Departments":
-            byDepartment();
-            break;
-          case "Add Department":
-            addDepartment();
-            break;
-         }
-      })
-    }
+      name: "action",
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        "View All Employees",
+        "Add Employee",
+        "Update Employee Role",
+        "View All Roles",
+        "Add Role",
+        "View All Departments",
+        "Add Department"
+      ]
+    }).then(answers => {
+      //starting switch statements
+      switch (answers.action) {
+        case "View All Employees":
+          byEmployee();
+          break;
+        case "Add Employee":
+          addEmployee();
+          break;
+        case "Update Employee Role":
+          updateRole();
+          break;
+        case "View All Roles":
+          byRole();
+          break;
+        case "Add Role":
+          addRole();
+          break;
+        case "View All Departments":
+          byDepartment();
+          break;
+        case "Add Department":
+          addDepartment();
+          break;
+      }
+    })
+}
 
-  // Function to display all employees
-  function byEmployee() {
-    let query = "SELECT * FROM employee";
-    connection.query(query, function(err,res) {
-      if (err) throw err;
-      console.table(res);
-      startSearch();
-      })
-    };
+// Function to display all employees
+function byEmployee() {
+  let query = "SELECT * FROM employee";
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    startSearch();
+  })
+};
 
-  // Function to display all roles 
-  function byRole() {
-    let query = "SELECT * FROM role";
-    connection.query(query, function(err,res) {
-      if (err) throw err;
-      console.table(res);
-      startSearch();
-      })
-    };
+// Function to display all roles 
+function byRole() {
+  let query = "SELECT * FROM role";
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    startSearch();
+  })
+};
 
-  // Function to display all departments
-  function byDepartment() {
-    let query = "SELECT * FROM department";
-    connection.query(query, function(err,res) {
-      if (err) throw err;
-      console.table(res);
-      startSearch();
-      })
-    };
+// Function to display all departments
+function byDepartment() {
+  let query = "SELECT * FROM department";
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    startSearch();
+  })
+};
 
-  // Function to add an employee
-  // function addEmployee()
+// Function to add a Department
+function addDepartment() {
+  inquirer.prompt(
+    {
+      name: "dept_name",
+      type: "input",
+      message: "Which department would you like to add?"
+    }).then((res) => {
+
+      const query = `INSERT INTO department (dept_name)
+    VALUES (?)`;
+      const params = [res.dept_name];
+
+      connection.query(query, params, (err, result) => {
+        if (err) throw err;
+        console.log("The department has been added.");
+        startSearch();
+      });
+    })
+};
+
+// Function to add a role 
+// function addRole() {
+//   let departmentChoices;
+//   connection.query('SELECT dept_id as value, dept_name as name FROM department, (res, err) =>{
+//     if (err) throw err;
+//     departmentChoices = res.map(({ dept_id, dept_name }) => ({
+//       name: dept_name,
+//       value: dept_id
+//     }))
+//   }.then(
 
 
-  // Function to add a Department
-  // function addDepartment() 
- 
-    
+//     inquirer.prompt(
+//       {
+//         name: "title",
+//         type: "input",
+//         message: "What is the name of the new role?"
+//       },
+//       {
+//         name: "salary",
+//         type: "input",
+//         message: "What is the salary of this new role?"
+//       },
+//       {
+//         name: "dept_name",
+//         type: "list",
+//         message: "Which department does this new role belong to?",
+//         choices: departmentChoices
+//       })).then((res) => {
 
-  // Function to add a role 
-  // function addRole()   
-  
+//         const query = `INSERT INTO role (title, salary, dept_id)
+//   VALUES (?, ?, ?)`;
+//         const params = [res.title, res.salary, res.dept_id];
+//         connection.query(query, params, (err, result) => {
+//           if (err) throw err;
+//           console.log("The role has been added.");
+//           startSearch();
+//         });
+//       })
 
-  // Function to update an employee's role  
-  // function updateRole()            
-            
-    
+
+// Function to update an employee's role  
+// function updateRole()    
+
+// Function to add an employee
+// function addEmployee()
 
 
 
-    // Default response for any other request (Not Found)
-    app.use((req, res) => {
-      res.status(404).end();
-    });
-    // Run server
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+
+
+// Default response for any other request (Not Found)
+app.use((req, res) => {
+  res.status(404).end();
+});
+// Run server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
