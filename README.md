@@ -49,11 +49,11 @@ The following images show the web application's appearance and functionality:
 * View the [Demo](https://drive.google.com/file/d/1xLGc6egHD_B5Nn3UnN0sFkv9CnrkGAt-/view)
 
 ## Installation
-Inquirer version 8.2.4
-MySql2
-Console.Table
-Dotenv
-Express
+* Inquirer version 8.2.4
+* MySql2
+* Console.Table
+* Dotenv
+* Express
 
 ## Usage
 * JavaScript / Node.js
