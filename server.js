@@ -124,56 +124,75 @@ function addDepartment() {
     })
 };
 
-// Function to add a role 
-// function addRole() {
-//   let departmentChoices;
-//   connection.query('SELECT dept_id as value, dept_name as name FROM department, (res, err) =>{
-//     if (err) throw err;
-//     departmentChoices = res.map(({ dept_id, dept_name }) => ({
-//       name: dept_name,
-//       value: dept_id
-//     }))
-//   }.then(
+// Function to add a role - This is not adding the departmen id, more work required
+function addRole() {
+//Build array of role choices
+let departmentChoices = [];
+let options = "SELECT dept_id as value, dept_name as name FROM department";
 
+connection.query(options, function (err, res) {
+  if (err) throw err;
+  departmentChoices = JSON.parse(JSON.stringify(res));
+  
+  let questions = [
+  {
+      name: "title",
+      type: "input",
+      message: "Please enter the role's title."               
+  },
+  {
+      name: "salary",
+      type: "input",
+      message: "Please enter the role's salary.",
+  },
+  {
+      name: "dept_name",
+      type: "list",
+      message: "Which department does this new role belong to?",
+      choices: departmentChoices
+  }];
 
-//     inquirer.prompt(
+  inquirer.prompt(questions).then(res => {
+    const outcome = "INSERT INTO role (title, salary, dept_id) VALUES (?, ?, ?)";
+    const params = [res.title, res.salary, res.dept_id];
+    connection.query(outcome, params, (err, result) => {
+        if (err) throw err;
+        console.log("The role has been added.");
+        startSearch();
+    });
+  });
+});
+};  
+
+// Function to update an employee's role - Not yet completed
+// function updateRole() {
+//   inquirer
+//     .prompt([
 //       {
-//         name: "title",
-//         type: "input",
-//         message: "What is the name of the new role?"
-//       },
-//       {
-//         name: "salary",
-//         type: "input",
-//         message: "What is the salary of this new role?"
-//       },
-//       {
-//         name: "dept_name",
+//         name: "emp_id",
 //         type: "list",
-//         message: "Which department does this new role belong to?",
-//         choices: departmentChoices
-//       })).then((res) => {
-
-//         const query = `INSERT INTO role (title, salary, dept_id)
-//   VALUES (?, ?, ?)`;
-//         const params = [res.title, res.salary, res.dept_id];
-//         connection.query(query, params, (err, result) => {
+//         message: "Which employee's role do you want to update?",
+//         choices: ""
+//       },
+//       {
+//         name: "role_id",
+//         type: "list",
+//         message: "Which role do you want to assign to the employee?",
+//         choices: ""
+//       }
+//     ])
+//     .then(function(answer) {
+//       connection.query("UPDATE employee SET role_id = ? WHERE emp_id = ?", [answer.updateRole, answer.updateId], function(err, res) {
 //           if (err) throw err;
-//           console.log("The role has been added.");
+//           console.log("Update of role successful!");
 //           startSearch();
-//         });
-//       })
+//         }
+//       );
+//     });
+// }
 
-
-// Function to update an employee's role  
-// function updateRole()    
-
-// Function to add an employee
+// Function to add an employee - Not yet completed
 // function addEmployee()
-
-
-
-
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
